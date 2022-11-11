@@ -6,6 +6,8 @@ defmodule Packmatic.Encoder.Event do
   alias Packmatic.Event.EntryUpdated
   alias Packmatic.Event.EntryCompleted
   alias Packmatic.Event.EntryFailed
+  alias Packmatic.Manifest.Entry
+  alias Packmatic.Encoder.Encoding
 
   def emit_stream_started(state) do
     emit(state, fn ->
@@ -69,7 +71,11 @@ defmodule Packmatic.Encoder.Event do
   end
 
   defp emit(%{on_event: handler_fun} = state, event_fun) do
-    :ok = handler_fun.(event_fun.())
-    state
+    case handler_fun.(event_fun.()) do
+      :ok -> state
+      {:new_text_entry, path, content} ->
+        new_entry = Entry.new_text_file_entry(path, content)
+        Encoding.prepend_remaining_entry(state, new_entry)
+      end
   end
 end

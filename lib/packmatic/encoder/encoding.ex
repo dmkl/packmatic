@@ -59,6 +59,10 @@ defmodule Packmatic.Encoder.Encoding do
     state |> close_zstream() |> done()
   end
 
+  def prepend_remaining_entry(state, entry) do
+    state |> Map.put(:remaining, [entry | state.remaining])
+  end
+
   defp encoding_next_source(state, source) do
     state |> Map.put(:current, put_elem(state.current, 1, source))
   end

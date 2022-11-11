@@ -22,6 +22,12 @@ defmodule Packmatic.Manifest.Entry do
 
   @enforce_keys ~w(source path timestamp)a
   defstruct source: nil, path: nil, timestamp: DateTime.from_unix!(0)
+
+  def new_text_file_entry(path, content) do
+    init_arg = fn -> {:ok, {:stream, String.splitter(content, "\n")}} end
+    entry = [source: {:dynamic, init_arg}, path: path, timestamp: DateTime.utc_now]
+    hd(Packmatic.Manifest.create([entry]).entries)
+  end
 end
 
 defimpl Packmatic.Validator.Target, for: Packmatic.Manifest.Entry do
