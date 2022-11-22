@@ -155,7 +155,7 @@ defmodule Packmatic.Encoder.Encoding do
     # With the default WindowBits value of 15, deflate fails on macOS.
 
     zstream = :zlib.open()
-    :ok = :zlib.deflateInit(zstream, :default, :deflated, -15, 8, :default)
+    :ok = :zlib.deflateInit(zstream, :none, :deflated, -15, 8, :default)
     %{state | zstream: zstream}
   end
 
