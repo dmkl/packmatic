@@ -12,7 +12,8 @@ defmodule Packmatic.Encoder.Event do
   def emit_stream_started(state) do
     emit(state, fn ->
       %StreamStarted{
-        stream_id: state.stream_id
+        stream_id: state.stream_id,
+        entries_count: length(state.remaining)
       }
     end)
   end

@@ -64,18 +64,19 @@ defmodule Packmatic.Event do
     """
 
     @type t :: %__MODULE__{
-            stream_id: Encoder.stream_id()
+            stream_id: Encoder.stream_id(),
+            entries_count: non_neg_integer()
           }
 
-    @enforce_keys ~w(stream_id)a
-    defstruct stream_id: nil
+    @enforce_keys ~w(stream_id entries_count)a
+    defstruct stream_id: nil, entries_count: 0
   end
 
   defmodule StreamEnded do
     @moduledoc """
     Represents an Event that is raised when the Encoder completes work. In case of normal
     completion, the reason will be set to `:done`, otherwise and in case of Source errors, the
-    reason will be carried across. 
+    reason will be carried across.
     """
 
     @type t :: %__MODULE__{
