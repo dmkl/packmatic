@@ -18,29 +18,32 @@ defmodule Packmatic.Field.Shared.ExtendedInformation do
 
   Size     | Content
   -------- | -
-  2 bytes  | Signature
-  2 bytes  | Size of Rest of Field (Bytes)
+  2 bytes  | 0x0001 - Tag for this "extra" block type
+  2 bytes  | Size of this "extra" block
   8 bytes  | Original Size (Bytes)
   8 bytes  | Compressed Size (Bytes)
+  8 bytes  | Offset of local header record
+  4 bytes  | Number of the disk on which this file starts
   """
 
-  @type t :: %__MODULE__{size: non_neg_integer(), size_compressed: non_neg_integer()}
-  @enforce_keys ~w(size size_compressed)a
-  defstruct size: 0, size_compressed: 0
+  @type t :: %__MODULE__{size: non_neg_integer(), size_compressed: non_neg_integer(), offset: non_neg_integer()}
+  @enforce_keys ~w(size size_compressed offset)a
+  defstruct size: 0, size_compressed: 0, offset: 0
 end
 
 defimpl Packmatic.Field, for: Packmatic.Field.Shared.ExtendedInformation do
-  import Packmatic.Field.Helpers
-
   def encode(target) do
     size = target.size
     size_compressed = target.size_compressed
+    offset = target.offset
 
     [
-      <<0x01, 0x00>>,
-      encode_16(16),
-      encode_64(size),
-      encode_64(size_compressed)
+      <<0x0001::little-size(16)>>,
+      <<28::little-size(16)>>,
+      <<size::little-size(64)>>,
+      <<size_compressed::little-size(64)>>,
+      <<offset::little-size(64)>>,
+      <<0::little-size(32)>>
     ]
   end
 end

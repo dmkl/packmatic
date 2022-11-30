@@ -113,7 +113,8 @@ defimpl Packmatic.Field, for: Packmatic.Field.Central.FileHeader do
   defp encode_zip64_info(target) do
     Field.encode(%Field.Shared.ExtendedInformation{
       size: target.size,
-      size_compressed: target.size_compressed
+      size_compressed: target.size_compressed,
+      offset: target.offset
     })
   end
 end

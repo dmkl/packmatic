@@ -103,8 +103,8 @@ defimpl Packmatic.Field, for: Packmatic.Field.Central.DirectoryEnd do
       encode_16(0),
       encode_16(target.entries_count),
       encode_16(target.entries_count),
-      encode_32(target.entries_size),
-      encode_32(target.entries_offset),
+      encode_32(nil),
+      encode_32(nil),
       encode_16(0)
     ]
   end
