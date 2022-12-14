@@ -44,8 +44,10 @@ defmodule Packmatic.Encoder do
     
   - `on_event` can be set to a function which will be called when events are raised by the Encoder
     during its lifecycle. See `Packmatic.Event` for further information.
+
+  - `archive_id` can be set to be used as a stream_id in `on_event` callbacks.
   """
-  @type option :: {:on_error, :skip | :halt} | {:on_event, Event.handler_fun()}
+  @type option :: {:on_error, :skip | :halt} | {:on_event, Event.handler_fun()} | {:archive_id, integer()}
 
   @typedoc """
   Represents an unique identifier of the Stream in operation. This allows you to distinguish

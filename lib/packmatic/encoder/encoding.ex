@@ -25,7 +25,7 @@ defmodule Packmatic.Encoder.Encoding do
           | {:halt, {:error, term()}}
 
   def encoding_start(%Manifest{valid?: true} = manifest, options) do
-    id = make_ref()
+    id = Keyword.get(options, :archive_id) || make_ref()
     entries = manifest.entries
     on_error = Keyword.get(options, :on_error, :halt)
     on_event = Keyword.get(options, :on_event)
