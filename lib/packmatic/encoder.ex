@@ -46,9 +46,13 @@ defmodule Packmatic.Encoder do
     during its lifecycle. See `Packmatic.Event` for further information.
 
   - `archive_id` can be set to be used as a stream_id in `on_event` callbacks.
-  """
-  @type option :: {:on_error, :skip | :halt} | {:on_event, Event.handler_fun()} | {:archive_id, integer()}
 
+  - `method` can be set either to `:store` or to `:deflate` (default).
+  """
+  @type option :: {:on_error, :skip | :halt} |
+                  {:on_event, Event.handler_fun()} |
+                  {:archive_id, integer()} |
+                  {:method, :store | :deflate}
   @typedoc """
   Represents an unique identifier of the Stream in operation. This allows you to distinguish
   between multiple series of Events raised against the same Manifest in multiple Streams

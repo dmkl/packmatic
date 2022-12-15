@@ -8,6 +8,8 @@ defmodule Packmatic.Encoder.Encoding do
   alias Packmatic.Encoder.Event
   import :erlang, only: [iolist_size: 1, crc32: 2]
 
+  @default_method :deflate
+
   defp cont(state), do: {:cont, state}
   defp done(state), do: {:done, state}
   defp halt(_, reason), do: {:halt, {:error, reason}}
@@ -29,8 +31,9 @@ defmodule Packmatic.Encoder.Encoding do
     entries = manifest.entries
     on_error = Keyword.get(options, :on_error, :halt)
     on_event = Keyword.get(options, :on_event)
+    method = Keyword.get(options, :method) || @default_method
 
-    %EncodingState{stream_id: id, remaining: entries, on_error: on_error, on_event: on_event}
+    %EncodingState{stream_id: id, remaining: entries, on_error: on_error, on_event: on_event, method: method}
     |> Event.emit_stream_started()
     |> cont()
   end
@@ -103,7 +106,12 @@ defmodule Packmatic.Encoder.Encoding do
   end
 
   defp encoding_entry_data(%{current: {entry, _, info}} = state, data_uncompressed) do
-    data_compressed = :zlib.deflate(state.zstream, data_uncompressed, :full)
+    data_compressed =
+      if state.method == :store do
+        data_uncompressed
+      else
+        :zlib.deflate(state.zstream, data_uncompressed, :full)
+      end
     info = %{info | checksum: crc32(info.checksum, data_uncompressed)}
     info = %{info | size_compressed: info.size_compressed + iolist_size(data_compressed)}
     info = %{info | size: info.size + iolist_size(data_uncompressed)}
