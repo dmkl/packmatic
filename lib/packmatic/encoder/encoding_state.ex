@@ -14,7 +14,8 @@ defmodule Packmatic.Encoder.EncodingState do
           zstream: nil | :zlib.zstream(),
           bytes_emitted: non_neg_integer(),
           on_error: :skip | :halt,
-          on_event: nil | Event.handler_fun()
+          on_event: nil | Event.handler_fun(),
+          method: :store | :deflate
         }
 
   @enforce_keys ~w(stream_id remaining)a
@@ -26,5 +27,6 @@ defmodule Packmatic.Encoder.EncodingState do
             zstream: nil,
             bytes_emitted: 0,
             on_error: :skip,
-            on_event: nil
+            on_event: nil,
+            method: :deflate
 end
